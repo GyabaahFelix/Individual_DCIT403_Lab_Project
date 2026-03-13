@@ -290,4 +290,4 @@ Possible improvements to the system include:
 
 Felix Gyabaah
 University of Ghana
-DCIT 403 – Intelligent Agent Systems
+DCIT 403 – Designing Intelligent Agents
