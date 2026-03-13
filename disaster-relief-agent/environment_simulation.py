@@ -40,11 +40,16 @@ class DisasterEnvironment:
 
     async def simulate_resource_shortage(self):
 
-        self.food -= random.randint(10, 20)
+        food_used = random.randint(10, 20)
 
-        if self.food < 20:
+        # prevent negative food values
+        if self.food >= food_used:
+            self.food -= food_used
+        else:
+            self.food = 0
+
+        if self.food <= 20:
             print("[Environment] Food shortage detected")
-
             self.coordinator.current_event = "resource_shortage"
 
 
@@ -52,7 +57,16 @@ class DisasterEnvironment:
 
         emergency_cases = random.randint(1, 3)
 
+        # prevent negative medical kits
+        kits_used = min(self.medical_kits, emergency_cases)
+
+        self.medical_kits -= kits_used
+
         print(f"[Environment] {emergency_cases} medical emergencies reported")
+
+
+        if self.medical_kits <= 5:
+            print("[Environment] Medical supplies running low")
 
         self.coordinator.current_event = "medical_emergency"
 
@@ -69,7 +83,11 @@ class DisasterEnvironment:
 
             await event()
 
-            # display dashboard after event
+            # ensure no negative values exist
+            self.food = max(0, self.food)
+            self.shelter = max(0, self.shelter)
+            self.medical_kits = max(0, self.medical_kits)
+
             self.display_dashboard()
 
             await asyncio.sleep(12)
